@@ -1,6 +1,6 @@
 # annotation-resource-loader-spring
 
-An example of how to create a custom annotation that loads a Java resource into a String.
+An example of how to create a custom annotation to load a Java resource into a String.
 
 # Example
 
