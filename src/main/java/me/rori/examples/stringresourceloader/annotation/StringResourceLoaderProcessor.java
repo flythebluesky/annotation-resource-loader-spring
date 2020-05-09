@@ -2,7 +2,6 @@ package me.rori.examples.stringresourceloader.annotation;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.context.ResourceLoaderAware;
@@ -19,12 +18,12 @@ import java.nio.charset.StandardCharsets;
 @Component
 public class StringResourceLoaderProcessor implements ResourceLoaderAware, BeanPostProcessor {
 
-  Logger logger = LoggerFactory.getLogger(StringResourceLoader.class);
+  Logger logger = LoggerFactory.getLogger(StringResourceLoaderProcessor.class);
 
   private ResourceLoader resourceLoader;
 
   @Override
-  public Object postProcessAfterInitialization(final Object bean, final String beanName) throws BeansException {
+  public Object postProcessAfterInitialization(final Object bean, final String beanName) {
     Field[] fields = bean.getClass().getDeclaredFields();
     for (Field field : fields) {
       if (field.isAnnotationPresent(StringResourceLoader.class)) {
@@ -32,9 +31,9 @@ public class StringResourceLoaderProcessor implements ResourceLoaderAware, BeanP
         try {
           String resourceString = loadResourceToString(annotation.value());
           field.set(bean, resourceString);
-          logger.debug("Loaded :\n" + resourceString);
+          String message = String.format("Loaded : %s%n", resourceString);
+          logger.debug(message);
         } catch (IllegalAccessException | IOException e) {
-          e.printStackTrace();
           throw new BeanInitializationException("Exception loading resource: " + annotation.value(), e);
         }
       }
